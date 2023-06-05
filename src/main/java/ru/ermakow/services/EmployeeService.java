@@ -9,8 +9,6 @@ import ru.ermakow.entities.Position;
 import ru.ermakow.exceptions.ResourceNotFoundException;
 import ru.ermakow.repositories.EmployeeRepository;
 import ru.ermakow.repositories.PositionRepository;
-
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +38,19 @@ public class EmployeeService {
 
     public void createNewEmployee(EmployeeDTO employeeDTO) {
         String name = employeeDTO.getName();
-        Position position = positionRepository.findByTitle(employeeDTO.getPositionTitle());
-        repository.save(name, position);
+        repository.save(name, employeeDTO.getPositionTitle());
+    }
+
+    public void deleteEmployeeById(Long id) {
+        repository.deleteById(id);
+    }
+
+    public void updateName(Long id, String name) {
+        repository.modifyName(id, name);
+    }
+
+    public void updatePosition(Long id, String positionTitle) {
+        Position position = positionRepository.findByTitle(positionTitle);
+        repository.updatePosition(id, position);
     }
 }

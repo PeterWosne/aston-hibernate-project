@@ -25,7 +25,7 @@ public class Position {
     @Column(name = "title")
     private String title;
 
-    @OneToMany(mappedBy = "position",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "position", fetch = FetchType.EAGER)
     private List<Employee> employees;
 
     @Column(name = "created_at")

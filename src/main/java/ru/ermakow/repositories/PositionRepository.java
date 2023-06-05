@@ -1,62 +1,75 @@
 package ru.ermakow.repositories;
 
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.ermakow.entities.Position;
-
-import javax.persistence.*;
+import ru.ermakow.hibernate.HibernateSessionFactory;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class PositionRepository {
 
-    SessionFactory factory = new org.hibernate.cfg.Configuration()
-            .configure("hibernate.cfg.xml")
-            .buildSessionFactory();
-
-    EntityManager em = factory.createEntityManager();
+    private final HibernateSessionFactory sessionFactory;
 
     public Position findById(Long id) {
-        em.getTransaction().begin();
-        Position position = em.find(Position.class, id);
-        em.getTransaction().commit();
-        return position;
+        try(Session session = sessionFactory.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Position position = session.get(Position.class, id);
+            session.getTransaction().commit();
+            return position;
+        }
     }
 
     public Position findByTitle(String positionTitle) {
-        em.getTransaction().begin();
-        Position position = (Position) em.createQuery("SELECT p FROM Position p WHERE p.title = :title").setParameter("title", positionTitle).getSingleResult();
-        em.getTransaction().commit();
-        return position;
+        try(Session session = sessionFactory.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Position position = (Position) session.createQuery("SELECT p FROM Position p WHERE p.title = :title")
+                    .setParameter("title", positionTitle)
+                    .getSingleResult();
+            session.getTransaction().commit();
+            return position;
+        }
     }
 
     public List<Position> findAll() {
-        em.getTransaction().begin();
-        List<Position> positions = em.createQuery("SELECT p FROM Position p", Position.class).getResultList();
-        em.getTransaction().commit();
-        return positions;
+        try(Session session = sessionFactory.getFactory().getCurrentSession()){
+            session.beginTransaction();
+            List<Position> positions = session
+                    .createQuery("select p from Position p", Position.class).getResultList();
+            session.getTransaction().commit();
+            return positions;
+        }
     }
 
     public void save(String title) {
-        em.getTransaction().begin();
-        Position position = new Position();
-        position.setTitle(title);
-        em.persist(position);
-        em.getTransaction().commit();
+        try (Session session = sessionFactory.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Position position = new Position();
+            position.setTitle(title);
+            session.save(position);
+            session.getTransaction().commit();
+        }
     }
 
-    public void delete(Position position) {
-        em.getTransaction().begin();
-        em.remove(position);
-        em.getTransaction().commit();
+    public void delete(Long id) {
+        try (Session session = sessionFactory.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Position position = session.get(Position.class, id);
+            session.delete(position);
+            session.getTransaction().commit();
+        }
     }
 
     public void modifyTitle(Long id, String title) {
-        em.getTransaction().begin();
-        Position old = em.find(Position.class,id);
-        old.setTitle(title);
-        em.merge(old);
-        em.getTransaction().commit();
+        try (Session session = sessionFactory.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Position position = session.get(Position.class,id);
+            position.setTitle(title);
+            session.merge(position);
+            session.getTransaction().commit();
+        }
     }
 }

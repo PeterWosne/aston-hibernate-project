@@ -30,8 +30,23 @@ public class EmployeeController {
 
     @PostMapping(consumes = {"application/xml","application/json"})
     @ResponseStatus(HttpStatus.CREATED)
-    public void createPosition(@RequestBody EmployeeDTO employeeDTO) {
+    public void createEmployee(@RequestBody EmployeeDTO employeeDTO) {
         service.createNewEmployee(employeeDTO);
+    }
+
+    @PutMapping("/updn/{id}")
+    public void updateName(@PathVariable Long id, @RequestBody EmployeeDTO employeeDTO) {
+        service.updateName(id, employeeDTO.getName());
+    }
+
+    @PutMapping("/updp/{id}")
+    public void updatePosition(@PathVariable Long id, @RequestBody EmployeeDTO employeeDTO) {
+        service.updatePosition(id, employeeDTO.getPositionTitle());
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteEmployeeById(@PathVariable Long id) {
+        service.deleteEmployeeById(id);
     }
 
     @ExceptionHandler

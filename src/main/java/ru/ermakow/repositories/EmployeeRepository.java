@@ -1,38 +1,76 @@
 package ru.ermakow.repositories;
 
 import lombok.RequiredArgsConstructor;
-import org.hibernate.SessionFactory;
+import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 import ru.ermakow.entities.Employee;
 import ru.ermakow.entities.Position;
-
-import javax.persistence.EntityManager;
+import ru.ermakow.hibernate.HibernateSessionFactory;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class EmployeeRepository {
 
-    SessionFactory factory = new org.hibernate.cfg.Configuration()
-            .configure("hibernate.cfg.xml")
-            .buildSessionFactory();
-
-    EntityManager em = factory.createEntityManager();
+    private final HibernateSessionFactory sessionFactory;
+    private final PositionRepository positionRepository;
 
     public Employee findById(Long id) {
-        Employee employee = em.find(Employee.class, id);
-        return employee;
+        try(Session session = sessionFactory.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Employee employee = session.get(Employee.class, id);
+            session.getTransaction().commit();
+            return employee;
+        }
     }
 
     public List<Employee> findAll() {
-        List<Employee> employees = em.createQuery("SELECT e FROM Employee e", Employee.class).getResultList();
-        return employees;
+        try (Session session = sessionFactory.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            List<Employee> employees = session
+                    .createQuery("select e from Employee e", Employee.class).getResultList();
+            session.getTransaction().commit();
+            return employees;
+        }
     }
 
-    public void save(String name, Position position) {
-        em.getTransaction().begin();
-        Employee employee = new Employee(name, position);
-        em.persist(employee);
-        em.flush();
-        em.getTransaction().commit();
+    public void save(String name, String positionTitle) {
+        Position position = positionRepository.findByTitle(positionTitle);
+        try (Session session = sessionFactory.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Employee employee = new Employee();
+            employee.setName(name);
+            employee.setPosition(position);
+            session.save(employee);
+            session.getTransaction().commit();
+        }
+    }
+
+    public void modifyName(Long id, String newName) {
+        try (Session session = sessionFactory.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Employee employee = session.get(Employee.class, id);
+            employee.setName(newName);
+            session.getTransaction().commit();
+        }
+    }
+
+    public void updatePosition(Long id, Position position) {
+        try (Session session = sessionFactory.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Employee employee = session.get(Employee.class,id);
+            employee.setPosition(position);
+            session.save(employee);
+            session.getTransaction().commit();
+        }
+    }
+
+    public void deleteById(Long id) {
+        try (Session session = sessionFactory.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Employee employee = session.get(Employee.class, id);
+            session.delete(employee);
+            session.getTransaction().commit();
+        }
     }
 }

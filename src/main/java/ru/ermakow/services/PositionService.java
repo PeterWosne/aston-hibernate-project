@@ -39,8 +39,7 @@ public class PositionService {
     }
 
     public void deletePositionById(Long id) {
-        Position p = repository.findById(id);
-        repository.delete(p);
+        repository.delete(id);
     }
 
     public void changeTitle(Long id, PositionDTO positionDTO) {
