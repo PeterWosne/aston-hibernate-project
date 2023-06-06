@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.ermakow.dtos.ProjectDTO;
 import ru.ermakow.exceptions.AppError;
 import ru.ermakow.exceptions.ResourceNotFoundException;
+import ru.ermakow.repositories.LinkRepository;
 import ru.ermakow.services.ProjectService;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 public class ProjectController {
 
     private final ProjectService service;
+    private final LinkRepository repository;
 
     @GetMapping
     public List<ProjectDTO> retrieveAllProjects() {
@@ -53,7 +55,7 @@ public class ProjectController {
     //удаление сотрудника с проекта
     @GetMapping("/remove/{employee_id}/fr/{project_id}")
     public void removeEmployeeFromProject(@PathVariable Long employee_id, @PathVariable Long project_id) {
-        service.removeEmplFrmPro(project_id, employee_id);
+        repository.delete(project_id, employee_id);
     }
 
     @ExceptionHandler

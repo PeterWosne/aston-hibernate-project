@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 import ru.ermakow.entities.Employee;
 import ru.ermakow.entities.Project;
+import ru.ermakow.entities.link.Project2Employee;
 import ru.ermakow.hibernate.HibernateSessionFactory;
 
 import java.util.List;
@@ -74,14 +75,12 @@ public class ProjectRepository {
     }
 
     public void removeEmployee(Long project_id, Employee employee) {
-        List<Employee> employees = null;
+
         try(Session session = sessionFactory.getFactory().getCurrentSession()) {
             session.beginTransaction();
-            Project project = session.get(Project.class, project_id);
-            employees = project.getEmployees();
-            employees.remove(employee);
-            project.setEmployees(employees);
-            session.merge(project);
+            session.createQuery("FROM Project2Employee WHERE employeeId = :employeeId AND projectId = :projectId", Project2Employee.class)
+                    .setParameter("employeeId", employee.getId())
+                    .setParameter("projectId", project_id);
             session.getTransaction().commit();
         }
     }

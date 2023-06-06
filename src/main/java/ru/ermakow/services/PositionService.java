@@ -7,7 +7,6 @@ import ru.ermakow.converters.PositionConverter;
 import ru.ermakow.entities.Position;
 import ru.ermakow.exceptions.ResourceNotFoundException;
 import ru.ermakow.repositories.PositionRepository;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -19,5 +19,6 @@
         <mapping class="ru.ermakow.entities.Position"/>
         <mapping class="ru.ermakow.entities.Employee"/>
         <mapping class="ru.ermakow.entities.Project"/>
+        <mapping class="ru.ermakow.entities.link.Project2Employee" />
     </session-factory>
 </hibernate-configuration>

@@ -21,8 +21,11 @@ CREATE TABLE projects(
 );
 
 CREATE TABLE projects2employees(
-   project_id  bigint NOT NULL references projects(id),
-   employee_id bigint NOT NULL references employees(id)
+   project_id BIGINT NOT NULL,
+   employee_id BIGINT NOT NULL,
+   CONSTRAINT pk_pro2empl PRIMARY KEY (project_id,employee_id),
+   CONSTRAINT fk_1 FOREIGN KEY (employee_id) REFERENCES employees(id),
+   CONSTRAINT fk_2 FOREIGN KEY (project_id) REFERENCES projects(id)
 );
 
 
