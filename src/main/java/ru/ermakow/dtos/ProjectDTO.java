@@ -14,4 +14,8 @@ public class ProjectDTO {
     private String title;
 
     private List<String> employees;
+
+    public ProjectDTO(String title) {
+        this.title = title;
+    }
 }

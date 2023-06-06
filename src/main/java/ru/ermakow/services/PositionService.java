@@ -38,11 +38,11 @@ public class PositionService {
         repository.save(positionDTO.getTitle());
     }
 
-    public void deletePositionById(Long id) {
-        repository.delete(id);
-    }
-
     public void changeTitle(Long id, PositionDTO positionDTO) {
         repository.modifyTitle(id, positionDTO.getTitle());
+    }
+
+    public void deletePositionById(Long id) {
+        repository.delete(id);
     }
 }

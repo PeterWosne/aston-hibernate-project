@@ -1,6 +1,5 @@
 package ru.ermakow.converters;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.ermakow.dtos.PositionDTO;
 import ru.ermakow.entities.Employee;
@@ -10,7 +9,6 @@ import java.util.stream.Collectors;
 
 
 @Component
-@RequiredArgsConstructor
 public class PositionConverter {
 
     public PositionDTO entityToDTO(Position p) {

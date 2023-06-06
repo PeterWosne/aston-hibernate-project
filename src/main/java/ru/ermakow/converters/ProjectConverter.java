@@ -1,6 +1,5 @@
 package ru.ermakow.converters;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.ermakow.dtos.ProjectDTO;
 import ru.ermakow.entities.Employee;
@@ -9,7 +8,6 @@ import ru.ermakow.entities.Project;
 import java.util.stream.Collectors;
 
 @Component
-@RequiredArgsConstructor
 public class ProjectConverter {
 
     public ProjectDTO entityToDTO(Project project) {

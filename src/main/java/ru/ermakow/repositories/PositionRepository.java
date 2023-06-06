@@ -2,7 +2,6 @@ package ru.ermakow.repositories;
 
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.ermakow.entities.Position;
 import ru.ermakow.hibernate.HibernateSessionFactory;

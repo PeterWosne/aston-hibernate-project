@@ -2,14 +2,9 @@ package ru.ermakow.repositories;
 
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import ru.ermakow.entities.Position;
+import ru.ermakow.entities.Employee;
 import ru.ermakow.entities.Project;
-import ru.ermakow.exceptions.AppError;
-import ru.ermakow.exceptions.ResourceNotFoundException;
 import ru.ermakow.hibernate.HibernateSessionFactory;
 
 import java.util.List;
@@ -37,6 +32,57 @@ public class ProjectRepository {
             Project project = session.get(Project.class, id);
             session.getTransaction().commit();
             return project;
+        }
+    }
+
+    public void save(String title) {
+        try (Session session = sessionFactory.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Project project = new Project();
+            project.setTitle(title);
+            session.save(project);
+            session.getTransaction().commit();
+        }
+    }
+
+    public void modifyTitle(Long id, String title) {
+        try (Session session = sessionFactory.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Project project = session.get(Project.class,id);
+            project.setTitle(title);
+            session.merge(project);
+            session.getTransaction().commit();
+        }
+    }
+
+    public void delete(Long id) {
+        try (Session session = sessionFactory.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Project project = session.get(Project.class, id);
+            session.delete(project);
+            session.getTransaction().commit();
+        }
+    }
+
+    public void assignEmployee(Long project_id, Employee employee) {
+        try(Session session = sessionFactory.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Project project = session.get(Project.class, project_id);
+            project.getEmployees().add(employee);
+            session.getTransaction().commit();
+        }
+    }
+
+    public void removeEmployee(Long project_id, Employee employee) {
+        List<Employee> employees = null;
+        try(Session session = sessionFactory.getFactory().getCurrentSession()) {
+            session.beginTransaction();
+            Project project = session.get(Project.class, project_id);
+            employees = project.getEmployees();
+            employees.remove(employee);
+            project.setEmployees(employees);
+            session.merge(project);
+            session.getTransaction().commit();
         }
     }
 }
